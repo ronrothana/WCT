@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Drawing App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #000; /* Add border to the canvas */
+            background-color: #fff; /* Background color of the canvas */
+            cursor: crosshair; /* Change cursor to crosshair */
+        }
+        #clearButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #clearButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Simple Drawing App</h1>
+<canvas id="drawingCanvas" width="800" height="600"></canvas>
+<button id="clearButton">Clear Canvas</button>
+
+<script>
+    // Get the canvas element and its context
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let drawing = false; // Track whether the user is drawing
+    let lastX = 0; // Last mouse X position
+    let lastY = 0; // Last mouse Y position
+
+    // Start drawing
+    canvas.addEventListener('mousedown', (e) => {
+        drawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY]; // Get initial position
+    });
+
+    // Stop drawing
+    canvas.addEventListener('mouseup', () => {
+        drawing = false;
+    });
+
+    // Draw on the canvas
+    canvas.addEventListener('mousemove', (e) => {
+        if (!drawing) return; // If not drawing, exit
+        ctx.beginPath(); // Start a new path
+        ctx.moveTo(lastX, lastY); // Move to the last position
+        ctx.lineTo(e.offsetX, e.offsetY); // Draw to the current position
+        ctx.stroke(); // Render the line
+        [lastX, lastY] = [e.offsetX, e.offsetY]; // Update last position
+    });
+
+    // Clear the canvas
+    document.getElementById('clearButton').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
+    });
+
+    // Set default stroke style
+    ctx.strokeStyle = '#000'; // Default color
+    ctx.lineWidth = 5; // Default line width
+</script>
+
+</body>
+</html>

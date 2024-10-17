@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Example</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #000; /* Add border to the canvas */
+            background-color: #fff; /* Background color of the canvas */
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Bouncing Ball Game</h1>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+<button id="locationButton">Show My Location</button>
+<p id="location"></p>
+
+<script>
+    // Get the canvas element and its context
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Ball properties
+    const ball = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        radius: 20,
+        dx: 5, // Change in x (speed)
+        dy: 4, // Change in y (speed)
+        color: getRandomColor()
+    };
+
+    // Function to get a random color
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Function to draw the ball
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false); // Draw the ball
+        ctx.fillStyle = ball.color; // Set ball color
+        ctx.fill(); // Fill the ball
+        ctx.closePath();
+    }
+
+    // Function to update ball position
+    function updateBallPosition() {
+        ball.x += ball.dx; // Update x position
+        ball.y += ball.dy; // Update y position
+
+        // Check for collision with walls
+        if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+            ball.dx = -ball.dx; // Reverse x direction
+            ball.color = getRandomColor(); // Change color
+        }
+        if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+            ball.dy = -ball.dy; // Reverse y direction
+            ball.color = getRandomColor(); // Change color
+        }
+    }
+
+    // Function to draw everything
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        drawBall(); // Draw the ball
+        updateBallPosition(); // Update ball position
+        requestAnimationFrame(draw); // Call draw again for the next frame
+    }
+
+    draw(); // Start the game loop
+
+    // Function to show the user's location
+    function showLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    document.getElementById('location').innerText = `Latitude: ${lat}, Longitude: ${lon}`;
+                },
+                () => {
+                    document.getElementById('location').innerText = 'Unable to retrieve your location.';
+                }
+            );
+        } else {
+            document.getElementById('location').innerText = 'Geolocation is not supported by this browser.';
+        }
+    }
+
+    // Event listener for the location button
+    document.getElementById('locationButton').addEventListener('click', showLocation);
+</script>
+
+</body>
+</html>

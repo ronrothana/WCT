@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Webpage Example</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome to My Offline Page</h1>
+<p>This webpage demonstrates how to use a service worker to cache content so that it can be accessed offline.</p>
+
+<script>
+    // Check for service worker support
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        });
+    }
+
+    // Install the service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.oninstall = (event) => {
+            event.waitUntil(
+                caches.open('v1').then(cache => {
+                    console.log('Caching offline assets');
+                    return cache.addAll([
+                        '/',
+                        'index.html',
+                    ]);
+                })
+            );
+        };
+    }
+
+    // Fetch the content from cache or network
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.onfetch = (event) => {
+            event.respondWith(
+                caches.match(event.request).then(cachedResponse => {
+                    return cachedResponse || fetch(event.request);
+                })
+            );
+        };
+    }
+</script>
+
+</body>
+</html>

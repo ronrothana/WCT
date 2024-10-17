@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Theme Color</title>
+</head>
+<body>
+<h1>Theme Color</h1>
+<button id="themeButton">Choose Theme</button>
+<div id="themeColorPicker"></div>
+
+<script>
+    var themeButton = document.getElementById("themeButton");
+    var themeColorPicker = document.getElementById("themeColorPicker");
+
+    // Load the saved theme color from localStorage
+    var savedThemeColor = localStorage.getItem("themeColor");
+    if (savedThemeColor) {
+        document.body.style.backgroundColor = savedThemeColor;
+    }
+
+    themeButton.addEventListener("click", function() {
+        themeColorPicker.style.display = "block";
+    });
+
+    themeColorPicker.addEventListener("click", function(event) {
+        var selectedColor = event.target.style.backgroundColor;
+        document.body.style.backgroundColor = selectedColor;
+
+        // Save the selected theme color to localStorage
+        localStorage.setItem("themeColor", selectedColor);
+
+        themeColorPicker.style.display = "none";
+    });
+</script>
+</body>
+</html>

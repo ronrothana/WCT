@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ron Rothana-REAN</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="500" height="300"></canvas>
+
+<script>
+    // Get the canvas element and its context
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Circle properties
+    let x = canvas.width / 2; // initial horizontal position (center)
+    let y = canvas.height / 2; // initial vertical position (center)
+    let radius = 50;
+    let speed = 2; // movement speed
+
+    // Random direction
+    let dx = Math.random() * 2 - 1; // random value between -1 and 1 for x direction
+    let dy = Math.random() * 2 - 1; // random value between -1 and 1 for y direction
+
+    // Normalize the random directions to control the speed
+    function normalizeSpeed() {
+        const length = Math.sqrt(dx * dx + dy * dy); // calculate the length of the vector
+        dx = (dx / length) * speed; // normalize x direction
+        dy = (dy / length) * speed; // normalize y direction
+    }
+
+    normalizeSpeed(); // apply normalization
+
+    // Animation function
+    function draw() {
+        // Clear the canvas before each new frame
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the circle
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = "pink";
+        ctx.fill();
+        ctx.closePath();
+
+        // Update the circle's position
+        x += dx;
+        y += dy;
+
+        // Check for collisions with the canvas edges
+        if (x + radius > canvas.width || x - radius < 0) {
+            dx = -dx; // reverse direction when hitting the left or right wall
+        }
+        if (y + radius > canvas.height || y - radius < 0) {
+            dy = -dy; // reverse direction when hitting the top or bottom wall
+        }
+
+        // Repeat the animation
+        requestAnimationFrame(draw);
+    }
+
+    // Start the animation
+    draw();
+</script>
+</body>
+</html>

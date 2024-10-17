@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Offline Webpage</title>
+</head>
+<body>
+<h1>Offline Webpage</h1>
+<p>This webpage is cached using a service worker, so it can be accessed even offline.</p>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>
